@@ -1,0 +1,1357 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Gestión de Biblioteca — Presentación</title>
+  <link rel="stylesheet" href="./reveal/reveal.css" />
+  <link rel="stylesheet" href="./reveal/theme/black.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700&display=swap');
+    :root {
+      --azul:#38bdf8; --verde:#4ade80; --amarillo:#fbbf24;
+      --magenta:#e879f9; --rojo:#f87171; --gris:#94a3b8;
+      --fondo:#0f172a; --panel:rgba(255,255,255,0.06); --borde:rgba(255,255,255,0.12);
+    }
+
+    /* ── layout real de Reveal: cada slide es UNA pantalla completa ── */
+    html, body { margin:0; padding:0; background:var(--fondo); height:100%; overflow:hidden; }
+    .reveal-viewport { background:var(--fondo) !important; }
+    .reveal { background:var(--fondo); }
+
+    /* canvas fijo de 1280x720 (16:9) que Reveal escala automáticamente
+       para llenar la pantalla — como una presentación de PowerPoint    */
+    .reveal .slides section {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      display: flex !important;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      text-align: left;
+      padding: 2.4rem 3rem 2.2rem;
+      /* si algún slide tiene más contenido del que entra en 720px,
+         se scrollea DENTRO del propio slide, sin romper la vista */
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .reveal .slides section::-webkit-scrollbar { width:6px; }
+    .reveal .slides section::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.12); border-radius:3px; }
+
+    /* tipografía — tamaños absolutos en px para no depender del scale */
+    .reveal h1 { color:var(--azul); font-size:2rem; font-weight:700; letter-spacing:-0.02em; margin-bottom:0.5rem; font-family:'Inter',sans-serif; }
+    .reveal h2 { color:var(--azul); font-size:1.4rem; font-weight:600; border-bottom:2px solid rgba(56,189,248,0.3); padding-bottom:0.4rem; margin-bottom:1rem; font-family:'Inter',sans-serif; }
+    .reveal h3 { color:var(--amarillo); font-size:1rem; font-weight:400; font-family:'Inter',sans-serif; }
+    .reveal p, .reveal li { font-size:0.9rem; line-height:1.75; color:#e2e8f0; font-family:'Inter',sans-serif; }
+    .reveal ul { display:block; margin-left:1.4rem; }
+    .reveal li { margin-bottom:0.4rem; }
+
+    /* código */
+    .reveal pre { width:100%; box-shadow:none; border:1px solid var(--borde); border-radius:8px; margin:0.6rem 0; }
+    .reveal pre code { font-family:'JetBrains Mono',monospace !important; font-size:0.78rem; line-height:1.6; padding:1rem 1.2rem; background:#0d1117; max-height:none; border-radius:8px; white-space:pre; }
+    .reveal code { font-family:'JetBrains Mono',monospace; font-size:0.82rem; background:rgba(255,255,255,0.08); padding:0.1em 0.4em; border-radius:4px; color:var(--amarillo); }
+
+    /* controles de Reveal — Reveal ya los posiciona bien dentro del viewport escalado */
+    .reveal .slide-number { font-size:0.7rem; color:var(--gris); background:rgba(0,0,0,0.35); }
+    .box { background:var(--panel); border:1px solid var(--borde); border-radius:10px; padding:0.9em 1.1em; margin:0.5em 0; }
+    .box-azul    { border-left:4px solid var(--azul);    background:rgba(56,189,248,0.07);  }
+    .box-verde   { border-left:4px solid var(--verde);   background:rgba(74,222,128,0.07);  }
+    .box-amarillo{ border-left:4px solid var(--amarillo);background:rgba(251,191,36,0.07);  }
+    .box-magenta { border-left:4px solid var(--magenta); background:rgba(232,121,249,0.07); }
+    .box-rojo    { border-left:4px solid var(--rojo);    background:rgba(248,113,113,0.07); }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:0.8em; }
+    .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.7em; }
+    .tag { display:inline-block; font-size:0.65em; font-family:'JetBrains Mono',monospace; padding:0.15em 0.55em; border-radius:4px; font-weight:600; vertical-align:middle; margin-left:0.3em; }
+    .tag-azul    { background:rgba(56,189,248,0.2);  color:var(--azul);    border:1px solid rgba(56,189,248,0.4);  }
+    .tag-verde   { background:rgba(74,222,128,0.2);  color:var(--verde);   border:1px solid rgba(74,222,128,0.4);  }
+    .tag-magenta { background:rgba(232,121,249,0.2); color:var(--magenta); border:1px solid rgba(232,121,249,0.4); }
+    .tag-amarillo{ background:rgba(251,191,36,0.2);  color:var(--amarillo);border:1px solid rgba(251,191,36,0.4);  }
+    .diagrama { font-family:'JetBrains Mono',monospace; font-size:0.65em; background:#0d1117; border:1px solid var(--borde); border-radius:8px; padding:1em 1.2em; color:#c9d1d9; line-height:1.6; white-space:pre; overflow-x:auto; }
+    .attr-table { width:100%; font-size:0.72em; border-collapse:collapse; }
+    .attr-table th { background:rgba(56,189,248,0.15); color:var(--azul); padding:0.4em 0.8em; text-align:left; font-weight:600; border-bottom:1px solid var(--borde); }
+    .attr-table td { padding:0.35em 0.8em; border-bottom:1px solid rgba(255,255,255,0.05); color:#e2e8f0; }
+    .attr-table tr:last-child td { border-bottom:none; }
+    .attr-table .mono { font-family:'JetBrains Mono',monospace; color:var(--amarillo); font-size:0.92em; }
+    .attr-table .tipo { color:var(--azul); }
+    .relacion { display:flex; align-items:center; gap:0.5em; font-size:0.78em; margin:0.4em 0; }
+    .relacion .bloque { background:var(--panel); border:1px solid var(--borde); border-radius:6px; padding:0.4em 0.8em; font-family:'JetBrains Mono',monospace; font-size:0.9em; }
+    .flecha { color:var(--azul); font-size:1.2em; }
+    .portada-badges { display:flex; gap:0.6em; margin-top:1.2em; flex-wrap:wrap; }
+    .pbadge { font-family:'JetBrains Mono',monospace; font-size:0.6em; padding:0.3em 0.8em; border-radius:20px; border:1px solid; }
+    .archivo-label { font-family:'JetBrains Mono',monospace; font-size:0.6em; color:var(--gris); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.4em; }
+    .archivo-label span { color:var(--azul); }
+    .o-tag { font-family:'JetBrains Mono',monospace; font-size:0.75em; color:var(--amarillo); background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.3); padding:0.1em 0.45em; border-radius:4px; }
+    .highlight-azul { color:var(--azul); font-weight:600; }
+    .highlight-verde { color:var(--verde); font-weight:600; }
+    .highlight-amarillo { color:var(--amarillo); font-weight:600; }
+    .highlight-magenta { color:var(--magenta); font-weight:600; }
+    .small { font-size:0.72em; }
+    .xsmall { font-size:0.62em; }
+    .mt { margin-top:0.7em; }
+    .reveal .progress { background:rgba(56,189,248,0.15); }
+    .reveal .progress span { background:var(--azul); }
+
+    /* ── CONSOLA INTERACTIVA ────────────────────────── */
+    #demo-slide { background:var(--fondo); }
+    #terminal-wrapper {
+      width:100%; height:480px;
+      background:#0a0a0a;
+      border:1px solid #2a2a2a;
+      border-radius:10px;
+      display:flex; flex-direction:column;
+      overflow:hidden;
+      font-family:'JetBrains Mono',monospace;
+      box-shadow:0 0 40px rgba(56,189,248,0.08);
+    }
+    #terminal-bar {
+      background:#1a1a1a;
+      padding:8px 14px;
+      display:flex; align-items:center; gap:8px;
+      border-bottom:1px solid #2a2a2a;
+      font-size:0.62em; color:#555;
+    }
+    #terminal-bar .dot { width:11px; height:11px; border-radius:50%; }
+    #terminal-bar .dot-r { background:#ff5f57; }
+    #terminal-bar .dot-y { background:#febc2e; }
+    #terminal-bar .dot-g { background:#28c840; }
+    #terminal-bar .title { margin-left:8px; color:#666; }
+    #terminal-output {
+      flex:1; overflow-y:auto; padding:12px 16px;
+      font-size:0.68em; line-height:1.65;
+      color:#ccc;
+      scroll-behavior:smooth;
+    }
+    #terminal-output::-webkit-scrollbar { width:4px; }
+    #terminal-output::-webkit-scrollbar-thumb { background:#333; border-radius:2px; }
+    #terminal-input-row {
+      display:flex; align-items:center;
+      padding:8px 16px;
+      border-top:1px solid #1a1a1a;
+      background:#070707;
+    }
+    #terminal-prompt { color:#fbbf24; font-size:0.68em; white-space:nowrap; margin-right:8px; }
+    #terminal-input {
+      flex:1; background:transparent; border:none; outline:none;
+      color:#fff; font-family:'JetBrains Mono',monospace;
+      font-size:0.68em; caret-color:#38bdf8;
+    }
+    /* colores ansi */
+    .t-cyan    { color:#00d7ff; }
+    .t-green   { color:#4ade80; }
+    .t-yellow  { color:#fbbf24; }
+    .t-magenta { color:#e879f9; }
+    .t-red     { color:#f87171; }
+    .t-gray    { color:#555; }
+    .t-white   { color:#fff; font-weight:600; }
+    .t-blue    { color:#60a5fa; }
+    .t-bold    { font-weight:700; }
+    .t-input   { color:#94a3b8; font-style:italic; }
+
+    /* consola decorativa (slides explicación) */
+    .consola { font-family:'JetBrains Mono',monospace; font-size:0.65em; background:#0a0a0a; border:1px solid #333; border-radius:8px; padding:1em 1.2em; line-height:1.7; white-space:pre; }
+    .consola .c-cyan    { color:#00d7ff; }
+    .consola .c-green   { color:#00e676; }
+    .consola .c-yellow  { color:#ffeb3b; }
+    .consola .c-magenta { color:#e040fb; }
+    .consola .c-red     { color:#ff5252; }
+    .consola .c-gray    { color:#757575; }
+    .consola .c-white   { color:#ffffff; font-weight:bold; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- SLIDE 1 — PORTADA -->
+<section>
+  <div style="padding-top:0.5em;">
+    <p class="archivo-label" style="font-size:0.55em;">📚 Trabajo Práctico — Algoritmos y Estructuras de Datos</p>
+    <h1 style="font-size:1.7em; margin-bottom:0.2em;">Sistema de Gestión<br>de Biblioteca</h1>
+    <h3>Implementación en Java con Lista Simple y Pila</h3>
+    <p style="font-size:0.75em; color:var(--gris); margin-top:0.3em;">Aplicación de consola con persistencia en JSON y arquitectura en capas</p>
+    <div class="portada-badges">
+      <span class="pbadge" style="color:var(--azul);border-color:rgba(56,189,248,0.4);">Java</span>
+      <span class="pbadge" style="color:var(--verde);border-color:rgba(74,222,128,0.4);">Lista Simple</span>
+      <span class="pbadge" style="color:var(--magenta);border-color:rgba(232,121,249,0.4);">Pila / Stack</span>
+      <span class="pbadge" style="color:var(--amarillo);border-color:rgba(251,191,36,0.4);">JSON</span>
+      <span class="pbadge" style="color:var(--gris);border-color:rgba(148,163,184,0.4);">CRUD</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 2 — CONTEXTO -->
+<section>
+  <h2>¿Qué es este sistema?</h2>
+  <div class="grid2" style="gap:1em;margin-top:0.8em;">
+    <div>
+      <div class="box box-azul">
+        <p style="margin:0;font-size:0.8em;"><strong style="color:var(--azul);">Objetivo principal</strong><br>Simular el funcionamiento de una biblioteca real: gestionar libros, registrar usuarios y controlar quién lleva qué libro y cuándo.</p>
+      </div>
+      <div class="box box-verde" style="margin-top:0.6em;">
+        <p style="margin:0;font-size:0.8em;"><strong style="color:var(--verde);">Tipo de aplicación</strong><br>Consola interactiva con menús, colores ANSI y persistencia automática en archivos <code>.json</code>.</p>
+      </div>
+    </div>
+    <div>
+      <div class="box">
+        <p style="margin:0 0 0.5em;font-size:0.78em;color:var(--amarillo);font-weight:600;">📦 Lo que implementamos</p>
+        <ul class="small">
+          <li>CRUD completo de <span class="highlight-azul">Libros</span> y <span class="highlight-verde">Usuarios</span></li>
+          <li>Sistema de <span class="highlight-magenta">Préstamos</span> con fechas</li>
+          <li>Historial LIFO con <span class="highlight-magenta">Pila</span></li>
+          <li>Catálogo con <span class="highlight-azul">Lista Simple</span></li>
+          <li>Guardado automático en <span class="highlight-amarillo">JSON</span></li>
+          <li>Validaciones de negocio</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3 — ARQUITECTURA -->
+<section>
+  <h2>Arquitectura del sistema</h2>
+  <p class="small" style="color:var(--gris);margin-bottom:0.7em;">El proyecto está dividido en capas. Cada capa tiene <strong>una sola responsabilidad</strong>.</p>
+  <div class="diagrama">┌─────────────────────────────────────────────────────────┐
+│  Main.java                                              │
+│  Punto de entrada — crea el sistema y lanza la consola  │
+└──────────────────────┬──────────────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────────────┐
+│  presentacion / Consola.java                            │
+│  Menús, colores ANSI, input del usuario                 │
+│  ✘ NO conoce nodos ni listas — solo usa el Servicio    │
+└──────────────────────┬──────────────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────────────┐
+│  servicio / SistemaBiblioteca.java                      │
+│  Lógica de negocio, validaciones, CRUD                  │
+└────────┬────────────────────────────┬───────────────────┘
+         ▼                            ▼
+┌─────────────────────┐   ┌──────────────────────────────┐
+│ estructuras/        │   │ datos/                       │
+│ ListaSimple.java    │   │ DatosJSON.java               │
+│ Pila.java           │   │ Guarda y carga .json         │
+│ NodoUsuario.java    │   └──────────────────────────────┘
+└──────────┬──────────┘
+           ▼
+┌─────────────────────┐
+│ modelos/            │
+│ Libro / Usuario     │
+│ Prestamo            │
+└─────────────────────┘</div>
+</section>
+
+<!-- SLIDE 4 — ARCHIVOS -->
+<section>
+  <h2>Archivos del proyecto</h2>
+  <div class="grid2" style="gap:0.6em;">
+    <div>
+      <div class="box box-azul">
+        <p class="archivo-label"><span>modelos/</span></p>
+        <ul class="xsmall" style="margin:0.2em 0 0 1em;">
+          <li><code>Libro.java</code> — atributos del libro</li>
+          <li><code>Usuario.java</code> — datos del usuario</li>
+          <li><code>Prestamo.java</code> — combina usuario + libro + fechas</li>
+        </ul>
+      </div>
+      <div class="box box-verde" style="margin-top:0.5em;">
+        <p class="archivo-label"><span>estructuras/</span></p>
+        <ul class="xsmall" style="margin:0.2em 0 0 1em;">
+          <li><code>NodoUsuario.java</code> — nodo de la lista</li>
+          <li><code>ListaSimple.java</code> — catálogo enlazado</li>
+          <li><code>Pila.java</code> — historial LIFO</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="box box-amarillo">
+        <p class="archivo-label"><span>datos/</span></p>
+        <ul class="xsmall" style="margin:0.2em 0 0 1em;">
+          <li><code>DatosJSON.java</code> — persistencia sin librerías</li>
+          <li>Genera: <code>libros.json</code>, <code>usuarios.json</code>, <code>prestamos.json</code></li>
+        </ul>
+      </div>
+      <div class="box box-magenta" style="margin-top:0.5em;">
+        <p class="archivo-label"><span>servicio/ y presentacion/</span></p>
+        <ul class="xsmall" style="margin:0.2em 0 0 1em;">
+          <li><code>SistemaBiblioteca.java</code> — lógica de negocio</li>
+          <li><code>Consola.java</code> — menús y colores ANSI</li>
+          <li><code>Main.java</code> — punto de entrada</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5 — LIBRO -->
+<section>
+  <h2><span class="tag tag-azul">modelos/Libro.java</span> El objeto Libro</h2>
+  <div class="grid2" style="gap:0.8em;margin-top:0.5em;">
+    <div>
+      <table class="attr-table">
+        <tr><th>Atributo</th><th>Tipo</th><th>Descripción</th></tr>
+        <tr><td class="mono">id</td><td class="tipo">int</td><td>Identificador único</td></tr>
+        <tr><td class="mono">titulo</td><td class="tipo">String</td><td>Título del libro</td></tr>
+        <tr><td class="mono">autor</td><td class="tipo">String</td><td>Autor</td></tr>
+        <tr><td class="mono">genero</td><td class="tipo">String</td><td>Género literario</td></tr>
+        <tr><td class="mono">anio</td><td class="tipo">int</td><td>Año de publicación</td></tr>
+        <tr><td class="mono">disponible</td><td class="tipo">boolean</td><td>¿Está en estantería?</td></tr>
+      </table>
+    </div>
+    <div>
+      <pre><code class="language-java">public class Libro {
+  private int     id;
+  private String  titulo;
+  private String  autor;
+  private String  genero;
+  private int     anio;
+  private boolean disponible;
+
+  public Libro(int id, String titulo,
+               String autor, String genero,
+               int anio) {
+    // todo libro empieza disponible
+    this.disponible = true;
+  }
+
+  // JSON construido sin librerías
+  public String toJson() {
+    return "{\"id\":" + id
+      + ",\"titulo\":\"" + titulo + "\""
+      + ",\"disponible\":" + disponible
+      + "}";
+  }
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6 — USUARIO -->
+<section>
+  <h2><span class="tag tag-verde">modelos/Usuario.java</span> El objeto Usuario</h2>
+  <div class="grid2" style="gap:0.8em;margin-top:0.5em;">
+    <div>
+      <table class="attr-table">
+        <tr><th>Atributo</th><th>Tipo</th><th>Descripción</th></tr>
+        <tr><td class="mono">id</td><td class="tipo">int</td><td>Identificador único</td></tr>
+        <tr><td class="mono">nombre</td><td class="tipo">String</td><td>Nombre completo</td></tr>
+        <tr><td class="mono">dni</td><td class="tipo">String</td><td>Documento — clave única</td></tr>
+        <tr><td class="mono">email</td><td class="tipo">String</td><td>Correo electrónico</td></tr>
+        <tr><td class="mono">telefono</td><td class="tipo">String</td><td>Número de contacto</td></tr>
+        <tr><td class="mono">activo</td><td class="tipo">boolean</td><td>¿Habilitado para pedir?</td></tr>
+      </table>
+      <div class="box box-verde" style="font-size:0.7em;padding:0.5em 0.8em;margin-top:0.5em;">
+        Todo usuario empieza <strong style="color:var(--verde);">activo = true</strong>.<br>Un usuario inactivo <strong>no puede</strong> pedir préstamos.
+      </div>
+    </div>
+    <div>
+      <pre><code class="language-java">// El DNI es clave única:
+// no puede haber dos usuarios
+// con el mismo documento.
+
+public String agregarUsuario(
+    String nombre, String dni,
+    String email, String telefono) {
+
+  // validación de duplicado
+  if (buscarUsuarioPorDni(dni) != null)
+    return "ERROR: DNI ya registrado.";
+
+  Usuario u = new Usuario(
+    siguienteId++,
+    nombre, dni, email, telefono);
+
+  // se inserta al final de la lista
+  NodoUsuario nuevo = new NodoUsuario(u);
+  // ... recorre hasta el último nodo
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 7 — PRESTAMO -->
+<section>
+  <h2><span class="tag tag-magenta">modelos/Prestamo.java</span> El objeto Préstamo</h2>
+  <p class="small" style="color:var(--gris);margin-bottom:0.5em;">El <strong>Préstamo</strong> es el objeto central: combina Usuario + Libro + fechas.</p>
+  <div class="grid2" style="gap:0.8em;">
+    <div>
+      <div class="box box-magenta" style="font-size:0.72em;padding:0.6em 0.9em;">
+        <strong style="color:var(--magenta);">Relación:</strong>
+        <div style="margin-top:0.5em;">
+          <div class="relacion"><div class="bloque">Usuario</div><div class="flecha">──┐</div></div>
+          <div class="relacion" style="margin-left:2.5em;"><div class="flecha">├──→</div><div class="bloque" style="border-color:var(--magenta);background:rgba(232,121,249,0.1);">Prestamo</div><div class="flecha">──→</div><div class="bloque" style="font-size:0.85em;">Pila (LIFO)</div></div>
+          <div class="relacion"><div class="bloque">Libro</div><div class="flecha">──┘</div></div>
+        </div>
+      </div>
+      <table class="attr-table" style="margin-top:0.5em;">
+        <tr><th>Atributo</th><th>Descripción</th></tr>
+        <tr><td class="mono">idUsuario</td><td>Referencia al usuario</td></tr>
+        <tr><td class="mono">idLibro</td><td>Referencia al libro</td></tr>
+        <tr><td class="mono">nombreUsuario</td><td>Desnormalizado</td></tr>
+        <tr><td class="mono">tituloLibro</td><td>Desnormalizado</td></tr>
+        <tr><td class="mono">fechaPrestamo</td><td>dd/MM/yyyy</td></tr>
+        <tr><td class="mono">fechaDevolucion</td><td>vacío si no devolvió</td></tr>
+        <tr><td class="mono">devuelto</td><td>true al devolver</td></tr>
+      </table>
+    </div>
+    <div>
+      <pre><code class="language-java">public class Prestamo {
+  private static final DateTimeFormatter FMT
+    = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+  // Al REGISTRAR el préstamo
+  public Prestamo(int id, Usuario u, Libro l) {
+    this.idUsuario     = u.getId();
+    this.idLibro       = l.getId();
+    this.nombreUsuario = u.getNombre();
+    this.tituloLibro   = l.getTitulo();
+    this.fechaPrestamo = LocalDate.now()
+                          .format(FMT);
+    this.fechaDevolucion = ""; // vacío
+    this.devuelto = false;
+  }
+
+  // Al DEVOLVER el libro
+  public void registrarDevolucion() {
+    this.devuelto = true;
+    this.fechaDevolucion =
+      LocalDate.now().format(FMT);
+  }
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8 — NODO -->
+<section>
+  <h2><span class="tag tag-verde">estructuras/NodoUsuario.java</span> El Nodo</h2>
+  <p class="small" style="color:var(--gris);margin-bottom:0.6em;">Un <strong>nodo</strong> es la "cajita" que vive dentro de la lista enlazada. Guarda exactamente dos cosas.</p>
+  <div class="grid2" style="gap:0.8em;">
+    <div>
+      <pre><code class="language-java">public class NodoUsuario {
+
+    // 1. El dato que queremos guardar
+    public Usuario      dato;
+
+    // 2. Flecha al próximo nodo
+    //    null = no hay siguiente
+    public NodoUsuario  siguiente;
+
+    public NodoUsuario(Usuario usuario) {
+        this.dato      = usuario;
+        this.siguiente = null;
+    }
+}</code></pre>
+      <div class="box box-verde" style="font-size:0.7em;margin-top:0.5em;">
+        El NodoUsuario <strong>no sabe nada del mundo exterior</strong>. La lógica de recorrer vive en <code>ListaSimple</code>.
+      </div>
+    </div>
+    <div>
+      <div class="diagrama" style="font-size:0.6em;">
+ ┌──────────────────┐
+ │  dato: Usuario 1 │──┐
+ └──────────────────┘  │
+                        ▼
+                ┌──────────────────┐
+                │  dato: Usuario 2 │──┐
+                └──────────────────┘  │
+                                       ▼
+                               ┌──────────────────┐
+                               │  dato: Usuario 3 │──▶ null
+                               └──────────────────┘</div>
+      <div class="box" style="font-size:0.7em;margin-top:0.5em;">
+        Los <code>NodoLibro</code> son iguales pero viven dentro de <code>ListaSimple</code> como clase interna, porque solo la lista los necesita.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9 — LISTA SIMPLE -->
+<section>
+  <h2><span class="tag tag-azul">estructuras/ListaSimple.java</span> La Lista Enlazada</h2>
+  <div class="grid2" style="gap:0.8em;">
+    <div>
+      <div class="box box-azul" style="font-size:0.72em;padding:0.6em 0.9em;">
+        <strong style="color:var(--azul);">Complejidad:</strong>
+        <table style="width:100%;margin-top:0.4em;font-size:0.9em;">
+          <tr><td><code>agregar()</code></td><td><span class="o-tag">O(n)</span> recorre hasta el final</td></tr>
+          <tr><td><code>buscar()</code></td><td><span class="o-tag">O(n)</span> nodo por nodo</td></tr>
+          <tr><td><code>eliminar()</code></td><td><span class="o-tag">O(n)</span> reconecta punteros</td></tr>
+        </table>
+      </div>
+      <div class="box box-rojo" style="font-size:0.7em;margin-top:0.5em;padding:0.5em 0.9em;">
+        <strong style="color:var(--rojo);">Eliminación — la más delicada:</strong>
+        <div class="diagrama" style="margin-top:0.4em;font-size:0.85em;background:transparent;border:none;padding:0;">Antes:      [A] → [B] → [C] → null
+Eliminar B: [A] ──────→ [C] → null
+A.siguiente apunta directamente a C</div>
+      </div>
+    </div>
+    <div>
+      <pre><code class="language-java">public String eliminarLibro(int id) {
+    NodoLibro anterior = null;
+    NodoLibro actual   = cabezaLibros;
+
+    while (actual != null) {
+        if (actual.dato.getId() == id) {
+
+            if (anterior == null)
+                // era la cabeza
+                cabezaLibros =
+                    actual.siguiente;
+            else
+                // saltamos el nodo
+                anterior.siguiente =
+                    actual.siguiente;
+
+            tamanoLibros--;
+            return "OK: eliminado.";
+        }
+        anterior = actual;
+        actual   = actual.siguiente;
+    }
+    return "ERROR: no encontrado.";
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 10 — PILA -->
+<section>
+  <h2><span class="tag tag-magenta">estructuras/Pila.java</span> La Pila — Stack LIFO</h2>
+  <p class="small" style="color:var(--gris);margin-bottom:0.5em;"><strong>LIFO</strong>: Último en Entrar → Primero en Salir. El historial siempre muestra del más nuevo al más antiguo.</p>
+  <div class="grid2" style="gap:0.8em;">
+    <div>
+      <div class="diagrama" style="font-size:0.6em;">
+ tope ──▶  ┌─────────────────────┐
+           │  Préstamo #5 (HOY)  │ ← más reciente
+           ├─────────────────────┤
+           │  Préstamo #4        │
+           ├─────────────────────┤
+           │  Préstamo #3        │
+           ├─────────────────────┤
+           │  Préstamo #2        │
+           ├─────────────────────┤
+           │  Préstamo #1        │ ← más antiguo
+           └─────────────────────┘
+
+  Push:    O(1) → solo tocamos el tope
+  Peek:    O(1) → solo leemos el tope
+  Historial: O(n) → recorremos todo</div>
+      <div class="box box-amarillo" style="font-size:0.7em;margin-top:0.5em;">
+        <strong>Nota:</strong> usamos la pila como <em>bitácora</em> — no desapilamos. El LIFO se demuestra en el <strong>orden de lectura</strong>.
+      </div>
+    </div>
+    <div>
+      <pre><code class="language-java">// PUSH: insertar en el tope
+public void apilar(Prestamo prestamo) {
+    NodoPrestamo nuevo =
+        new NodoPrestamo(prestamo);
+
+    // nuevo apunta al ex-tope
+    nuevo.siguiente = tope;
+
+    // nuevo PASA a ser el tope
+    tope = nuevo;
+    tamano++;
+}
+
+// PEEK: leer sin extraer
+public Prestamo verUltimo() {
+    return tope != null
+        ? tope.dato
+        : null;
+}
+
+// Antes: tope→[B]→[A]→null
+// Push C: tope→[C]→[B]→[A]→null</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 11 — JSON -->
+<section>
+  <h2><span class="tag tag-amarillo">datos/DatosJSON.java</span> Persistencia sin librerías</h2>
+  <div class="grid2" style="gap:0.8em;">
+    <div>
+      <div class="box box-amarillo" style="font-size:0.72em;padding:0.6em 0.9em;">
+        <strong style="color:var(--amarillo);">Archivos generados en <code>data/</code>:</strong>
+        <ul style="margin-top:0.3em;">
+          <li><code>libros.json</code></li>
+          <li><code>usuarios.json</code></li>
+          <li><code>prestamos.json</code></li>
+        </ul>
+      </div>
+      <pre style="margin-top:0.5em;"><code class="language-json">{
+  "datos": [
+    {
+      "id": 1,
+      "titulo": "Don Quijote",
+      "autor": "Cervantes",
+      "disponible": true
+    }
+  ]
+}</code></pre>
+    </div>
+    <div>
+      <pre><code class="language-java">// Parseo manual: cuenta llaves { }
+private static List<String>
+        extraerObjetos(String json) {
+
+    List<String> res = new ArrayList<>();
+    int i = json.indexOf("[") + 1;
+
+    while (i < json.length()) {
+        if (json.charAt(i) == '{') {
+            int prof = 0, j = i;
+            while (j < json.length()) {
+                char c = json.charAt(j);
+                if      (c=='{') prof++;
+                else if (c=='}') {
+                    prof--;
+                    if (prof == 0) {
+                        res.add(
+                          json.substring(i,j+1));
+                        i = j+1; break;
+                    }
+                }
+                j++;
+            }
+        } else i++;
+    }
+    return res;
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 12 — SERVICIO -->
+<section>
+  <h2><span class="tag tag-azul">servicio/SistemaBiblioteca.java</span> Lógica de negocio</h2>
+  <div class="grid2" style="gap:0.8em;">
+    <div>
+      <div class="box box-azul" style="font-size:0.72em;padding:0.6em 0.9em;">
+        <strong style="color:var(--azul);">Reglas de negocio:</strong>
+        <ul style="margin-top:0.3em;">
+          <li>No prestar un libro <strong>ya prestado</strong></li>
+          <li>No devolver un libro <strong>disponible</strong></li>
+          <li>No eliminar un libro <strong>prestado</strong></li>
+          <li>No eliminar usuario con <strong>préstamos activos</strong></li>
+          <li>No registrar <strong>DNI duplicado</strong></li>
+          <li>Usuario <strong>inactivo</strong> no puede pedir</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <pre><code class="language-java">public String registrarPrestamo(
+        int idUsuario, int idLibro) {
+
+    Usuario u = catalogo
+        .buscarUsuarioPorId(idUsuario);
+    if (u == null)
+      return "ERROR: Usuario no existe.";
+    if (!u.isActivo())
+      return "ERROR: Usuario inactivo.";
+
+    Libro l = catalogo
+        .buscarLibroPorId(idLibro);
+    if (l == null)
+      return "ERROR: Libro no existe.";
+    if (!l.isDisponible())
+      return "ERROR: Libro ya prestado.";
+
+    Prestamo p = new Prestamo(
+      historial.getSiguienteId(), u, l);
+
+    l.setDisponible(false); // ← clave
+    historial.apilarDirecto(p); // PUSH
+    guardarTodo();
+    return "OK: Préstamo registrado.";
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 13 — CONSOLA ANSI -->
+<section>
+  <h2><span class="tag tag-verde">presentacion/Consola.java</span> Interfaz de consola</h2>
+  <div class="grid2" style="gap:0.8em;">
+    <div>
+      <pre><code class="language-java">// Códigos ANSI para colores
+static final String RESET   = "\033[0m";
+static final String VERDE   = "\033[92m";
+static final String ROJO    = "\033[91m";
+static final String AMARILLO= "\033[93m";
+static final String AZUL    = "\033[94m";
+static final String MAGENTA = "\033[95m";
+static final String CIAN    = "\033[96m";
+
+// Encabezado con bordes Unicode
+private void encabezado(String titulo,
+                         String color) {
+  int n = titulo.length() + 4;
+  System.out.println(
+    color+"╔"+"═".repeat(n)+"╗"+RESET);
+  System.out.println(
+    color+"║  "+NEGRITA+titulo
+         +RESET+color+"  ║"+RESET);
+  System.out.println(
+    color+"╚"+"═".repeat(n)+"╝"+RESET);
+}</code></pre>
+    </div>
+    <div>
+      <p class="small" style="color:var(--gris);margin-bottom:0.4em;">Así se ve en consola:</p>
+      <div class="consola">
+<span class="c-cyan">╔══════════════════════════════════════╗
+║  </span><span class="c-white">SISTEMA DE GESTIÓN DE BIBLIOTECA</span><span class="c-cyan">  ║
+╚══════════════════════════════════════╝</span>
+
+  <span class="c-white">1.</span> Gestionar Libros     <span class="c-cyan">(Lista Simple)</span>
+  <span class="c-white">2.</span> Gestionar Usuarios   <span class="c-green">(Lista Simple)</span>
+  <span class="c-white">3.</span> Gestionar Préstamos  <span class="c-magenta">(Pila / LIFO)</span>
+  <span class="c-white">4.</span> Ver Estadísticas
+  <span class="c-white">0.</span> Salir
+
+<span class="c-yellow">  ▶ Selecciona una opción: </span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 14 — FLUJO COMPLETO -->
+<section>
+  <h2>Flujo completo — Registrar un préstamo</h2>
+  <div class="diagrama" style="font-size:0.62em;">
+ Usuario en consola
+      │
+      ▼  "3. Gestionar Préstamos" → "1. Registrar préstamo"
+ ┌─────────────────────────────────────────────┐
+ │  Consola.java                               │
+ │  Muestra lista de usuarios y libros         │
+ │  Pide ID de usuario e ID de libro           │
+ │  Llama: sistema.registrarPrestamo(idU, idL) │
+ └────────────────────┬────────────────────────┘
+                      ▼
+ ┌─────────────────────────────────────────────┐
+ │  SistemaBiblioteca.java                     │
+ │  1. busca usuario → valida activo           │
+ │  2. busca libro   → valida disponible       │
+ │  3. crea Prestamo(id, usuario, libro)       │
+ │  4. libro.setDisponible(false)              │
+ │  5. pila.apilarDirecto(prestamo)  ← PUSH   │
+ │  6. guardarTodo() → DatosJSON               │
+ └────────────────────┬────────────────────────┘
+            ┌─────────┴──────────┐
+            ▼                    ▼
+ ┌────────────────┐   ┌─────────────────────────┐
+ │  Pila.java     │   │  DatosJSON.java          │
+ │  Push al tope  │   │  Escribe .json en disco  │
+ └────────────────┘   └─────────────────────────┘</div>
+</section>
+
+<!-- SLIDE 15 — DEMO INTERACTIVA -->
+<section id="demo-slide">
+  <h2 style="margin-bottom:0.4em;">🖥️ Consola interactiva — probá el sistema</h2>
+  <p class="small" style="color:var(--gris);margin-bottom:0.5em;">La misma lógica del sistema Java, corriendo en el navegador. Escribí una opción y presioná <strong>Enter</strong>.</p>
+  <div id="terminal-wrapper">
+    <div id="terminal-bar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span class="title">biblioteca — consola interactiva</span>
+    </div>
+    <div id="terminal-output"></div>
+    <div id="terminal-input-row">
+      <span id="terminal-prompt">▶</span>
+      <input id="terminal-input" type="text" autocomplete="off" spellcheck="false" placeholder="escribí una opción..." />
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 16 — CRUD -->
+<section>
+  <h2>CRUD — Operaciones sobre Libros y Usuarios</h2>
+  <div class="grid2" style="gap:0.8em;margin-top:0.5em;">
+    <div>
+      <div class="box box-azul" style="font-size:0.73em;padding:0.7em 1em;">
+        <p style="margin:0 0 0.4em;color:var(--azul);font-weight:600;">📖 CRUD de Libros</p>
+        <table style="width:100%;font-size:0.92em;">
+          <tr><td><span class="tag tag-verde">C</span></td><td><code>agregarLibro()</code></td><td><span class="o-tag" style="font-size:0.75em;">O(n)</span></td></tr>
+          <tr><td><span class="tag tag-azul">R</span></td><td><code>listarLibros()</code></td><td><span class="o-tag" style="font-size:0.75em;">O(n)</span></td></tr>
+          <tr><td><span class="tag tag-azul">R</span></td><td><code>buscarLibros()</code></td><td><span class="o-tag" style="font-size:0.75em;">O(n)</span></td></tr>
+          <tr><td><span class="tag tag-amarillo">U</span></td><td><code>editarLibro()</code></td><td><span class="o-tag" style="font-size:0.75em;">O(n)</span></td></tr>
+          <tr><td><span class="tag tag-magenta">D</span></td><td><code>eliminarLibro()</code></td><td><span class="o-tag" style="font-size:0.75em;">O(n)</span></td></tr>
+        </table>
+      </div>
+      <div class="box box-verde" style="font-size:0.73em;padding:0.7em 1em;margin-top:0.5em;">
+        <p style="margin:0 0 0.4em;color:var(--verde);font-weight:600;">👤 CRUD de Usuarios</p>
+        <table style="width:100%;font-size:0.92em;">
+          <tr><td><span class="tag tag-verde">C</span></td><td><code>agregarUsuario()</code></td></tr>
+          <tr><td><span class="tag tag-azul">R</span></td><td><code>listarUsuarios()</code></td></tr>
+          <tr><td><span class="tag tag-amarillo">U</span></td><td><code>editarUsuario()</code></td></tr>
+          <tr><td><span class="tag tag-magenta">D</span></td><td><code>eliminarUsuario()</code></td></tr>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="consola">
+<span class="c-cyan">╔═══════════════════════════════════════╗
+║  CATÁLOGO DE LIBROS — Lista Simple  ║
+╚═══════════════════════════════════════╝</span>
+
+  <span class="c-white">1.</span> Agregar libro
+  <span class="c-white">2.</span> Listar todos
+  <span class="c-white">3.</span> Buscar libro    <span class="c-gray">por título o autor</span>
+  <span class="c-white">4.</span> Editar libro
+  <span class="c-white">5.</span> Eliminar libro
+  <span class="c-white">0.</span> Volver
+
+  <span class="c-gray">1. [01]</span> "<span class="c-white">Don Quijote</span>" — Cervantes  <span class="c-green">(Disponible)</span>
+  <span class="c-gray">2. [02]</span> "<span class="c-white">Cien años de soledad</span>" — G. Márquez  <span class="c-red">(Prestado)</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 17 — CONCLUSIÓN -->
+<section>
+  <h2>Conclusiones</h2>
+  <div class="grid3" style="gap:0.7em;margin-top:0.7em;">
+    <div class="box box-azul" style="font-size:0.72em;padding:0.8em 0.9em;">
+      <p style="margin:0 0 0.4em;color:var(--azul);font-weight:600;font-size:1.1em;">📚 Lista Simple</p>
+      <p style="margin:0;line-height:1.6;">Permite recorrer, insertar y eliminar <strong>sin arrays</strong>. Cada nodo solo conoce al siguiente.</p>
+    </div>
+    <div class="box box-magenta" style="font-size:0.72em;padding:0.8em 0.9em;">
+      <p style="margin:0 0 0.4em;color:var(--magenta);font-weight:600;font-size:1.1em;">📦 Pila LIFO</p>
+      <p style="margin:0;line-height:1.6;">El historial respeta <strong>último en entrar, primero en salir</strong>. Push y Peek en O(1).</p>
+    </div>
+    <div class="box box-verde" style="font-size:0.72em;padding:0.8em 0.9em;">
+      <p style="margin:0 0 0.4em;color:var(--verde);font-weight:600;font-size:1.1em;">🔗 Préstamo</p>
+      <p style="margin:0;line-height:1.6;">Combina Usuario + Libro y registra <strong>fechas automáticamente</strong>.</p>
+    </div>
+  </div>
+  <div class="box" style="margin-top:0.7em;font-size:0.75em;padding:0.7em 1em;">
+    <div class="grid2">
+      <div>
+        <p style="margin:0 0 0.3em;color:var(--amarillo);font-weight:600;">Qué aprendimos</p>
+        <ul class="small" style="margin:0 0 0 1em;">
+          <li>Implementar estructuras desde cero con nodos</li>
+          <li>Separación de responsabilidades (capas)</li>
+          <li>Modelar objetos con relaciones</li>
+          <li>Persistir en JSON sin librerías externas</li>
+        </ul>
+      </div>
+      <div>
+        <p style="margin:0 0 0.3em;color:var(--amarillo);font-weight:600;">Posibles extensiones</p>
+        <ul class="small" style="margin:0 0 0 1em;">
+          <li>Fecha límite y alertas de vencimiento</li>
+          <li>Búsqueda binaria con catálogo ordenado</li>
+          <li>Árbol de búsqueda para acceso más rápido</li>
+          <li>Interfaz web o de escritorio</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 18 — CIERRE -->
+<section>
+  <div style="text-align:center;padding-top:1.5em;">
+    <h1 style="font-size:2em;">¡Gracias!</h1>
+    <h3 style="margin-top:0.5em;">Sistema de Gestión de Biblioteca</h3>
+    <div class="portada-badges" style="justify-content:center;margin-top:1.2em;">
+      <span class="pbadge" style="color:var(--azul);border-color:rgba(56,189,248,0.4);">Lista Simple</span>
+      <span class="pbadge" style="color:var(--magenta);border-color:rgba(232,121,249,0.4);">Pila / LIFO</span>
+      <span class="pbadge" style="color:var(--verde);border-color:rgba(74,222,128,0.4);">CRUD</span>
+      <span class="pbadge" style="color:var(--amarillo);border-color:rgba(251,191,36,0.4);">JSON</span>
+      <span class="pbadge" style="color:var(--gris);border-color:rgba(148,163,184,0.4);">Java</span>
+    </div>
+    <p style="margin-top:2em;color:var(--gris);font-size:0.75em;">Análisis de Sistemas — Instituto Francisco de Paula Robles</p>
+  </div>
+</section>
+
+</div>
+</div>
+
+<script src="./reveal/reveal.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════
+//  SISTEMA DE BIBLIOTECA — lógica en JavaScript
+//  Reimplementa la misma lógica del Java para la demo
+// ═══════════════════════════════════════════════════════════
+
+// ── estructuras ────────────────────────────────────────────
+class NodoLibro {
+  constructor(dato) { this.dato = dato; this.siguiente = null; }
+}
+class NodoUsuario {
+  constructor(dato) { this.dato = dato; this.siguiente = null; }
+}
+class NodoPrestamo {
+  constructor(dato) { this.dato = dato; this.siguiente = null; }
+}
+
+class ListaSimple {
+  constructor() {
+    this.cabezaLibros = null; this.cabezaUsuarios = null;
+    this.tamLibros = 0; this.tamUsuarios = 0;
+    this.nextIdLibro = 1; this.nextIdUsuario = 1;
+  }
+  agregarLibro(titulo, autor, genero, anio) {
+    titulo = titulo.trim(); autor = autor.trim();
+    if (!titulo || !autor) return 'ERROR: Título y autor no pueden estar vacíos.';
+    let a = this.cabezaLibros;
+    while (a) { if (a.dato.titulo.toLowerCase()===titulo.toLowerCase()) return 'ERROR: Ya existe "'+titulo+'".'; a=a.siguiente; }
+    const libro = { id: this.nextIdLibro++, titulo, autor, genero: genero||'—', anio: parseInt(anio)||0, disponible: true };
+    const nodo = new NodoLibro(libro);
+    if (!this.cabezaLibros) { this.cabezaLibros = nodo; }
+    else { let c=this.cabezaLibros; while(c.siguiente) c=c.siguiente; c.siguiente=nodo; }
+    this.tamLibros++;
+    return 'OK: Libro "'+titulo+'" agregado.';
+  }
+  eliminarLibro(id) {
+    let prev=null, c=this.cabezaLibros;
+    while(c){ if(c.dato.id===id){ if(prev) prev.siguiente=c.siguiente; else this.cabezaLibros=c.siguiente; this.tamLibros--; return 'OK: Libro ['+id+'] eliminado.'; } prev=c; c=c.siguiente; }
+    return 'ERROR: No existe libro con ID '+id+'.';
+  }
+  buscarLibroPorId(id){ let c=this.cabezaLibros; while(c){ if(c.dato.id===id) return c.dato; c=c.siguiente; } return null; }
+  buscarLibros(t){ t=t.toLowerCase(); let r=[],c=this.cabezaLibros; while(c){ if(c.dato.titulo.toLowerCase().includes(t)||c.dato.autor.toLowerCase().includes(t)) r.push(c.dato); c=c.siguiente; } return r; }
+  todosLibros(){ let r=[],c=this.cabezaLibros; while(c){ r.push(c.dato); c=c.siguiente; } return r; }
+  agregarUsuario(nombre, dni, email, tel) {
+    nombre=nombre.trim(); dni=dni.trim();
+    if(!nombre||!dni) return 'ERROR: Nombre y DNI son obligatorios.';
+    let c=this.cabezaUsuarios; while(c){ if(c.dato.dni===dni) return 'ERROR: Ya existe un usuario con DNI '+dni+'.'; c=c.siguiente; }
+    const u={ id:this.nextIdUsuario++, nombre, dni, email:email||'—', telefono:tel||'—', activo:true };
+    const nodo=new NodoUsuario(u);
+    if(!this.cabezaUsuarios){ this.cabezaUsuarios=nodo; }
+    else{ let x=this.cabezaUsuarios; while(x.siguiente) x=x.siguiente; x.siguiente=nodo; }
+    this.tamUsuarios++;
+    return 'OK: Usuario "'+nombre+'" registrado.';
+  }
+  eliminarUsuario(id){
+    let prev=null,c=this.cabezaUsuarios;
+    while(c){ if(c.dato.id===id){ if(prev) prev.siguiente=c.siguiente; else this.cabezaUsuarios=c.siguiente; this.tamUsuarios--; return 'OK: Usuario ['+id+'] eliminado.'; } prev=c; c=c.siguiente; }
+    return 'ERROR: No existe usuario con ID '+id+'.';
+  }
+  buscarUsuarioPorId(id){ let c=this.cabezaUsuarios; while(c){ if(c.dato.id===id) return c.dato; c=c.siguiente; } return null; }
+  todosUsuarios(){ let r=[],c=this.cabezaUsuarios; while(c){ r.push(c.dato); c=c.siguiente; } return r; }
+}
+
+class Pila {
+  constructor(){ this.tope=null; this.tam=0; this.nextId=1; }
+  apilar(p){ const n=new NodoPrestamo(p); n.siguiente=this.tope; this.tope=n; this.tam++; }
+  verUltimo(){ return this.tope?this.tope.dato:null; }
+  historial(soloActivos){
+    let r=[],c=this.tope;
+    while(c){ if(!soloActivos||!c.dato.devuelto) r.push(c.dato); c=c.siguiente; }
+    return r;
+  }
+  buscarActivoPorLibro(idLibro){ let c=this.tope; while(c){ if(c.dato.idLibro===idLibro&&!c.dato.devuelto) return c.dato; c=c.siguiente; } return null; }
+  activosPorUsuario(idU){ let r=[],c=this.tope; while(c){ if(c.dato.idUsuario===idU&&!c.dato.devuelto) r.push(c.dato); c=c.siguiente; } return r; }
+}
+
+class SistemaBiblioteca {
+  constructor(){
+    this.catalogo=new ListaSimple(); this.pila=new Pila();
+    // datos iniciales
+    const libros=[
+      ['Don Quijote de la Mancha','Miguel de Cervantes','Clásico',1605],
+      ['Cien años de soledad','Gabriel García Márquez','Realismo',1967],
+      ['El Principito','Antoine de Saint-Exupéry','Fábula',1943],
+      ['1984','George Orwell','Distopía',1949],
+      ['Orgullo y Prejuicio','Jane Austen','Romance',1813],
+      ['La Odisea','Homero','Épica',-800],
+      ['Harry Potter y la Piedra Filosofal','J. K. Rowling','Fantasía',1997],
+      ['El Señor de los Anillos','J. R. R. Tolkien','Fantasía',1954],
+      ['Los Juegos del Hambre','Suzanne Collins','Aventura',2008],
+      ['Crónica de una muerte anunciada','Gabriel García Márquez','Novela',1981],
+    ];
+    libros.forEach(l=>this.catalogo.agregarLibro(l[0],l[1],l[2],l[3]));
+    const usuarios=[
+      ['Ana García','28456123','ana@mail.com','351-1234'],
+      ['Carlos López','31987654','carlos@mail.com','351-5678'],
+      ['María Rodríguez','25678901','maria@mail.com','351-9012'],
+    ];
+    usuarios.forEach(u=>this.catalogo.agregarUsuario(u[0],u[1],u[2],u[3]));
+  }
+  hoy(){ const d=new Date(); return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(); }
+  registrarPrestamo(idU,idL){
+    const u=this.catalogo.buscarUsuarioPorId(idU);
+    if(!u) return 'ERROR: No existe usuario con ID '+idU+'.';
+    if(!u.activo) return 'ERROR: Usuario "'+u.nombre+'" está inactivo.';
+    const l=this.catalogo.buscarLibroPorId(idL);
+    if(!l) return 'ERROR: No existe libro con ID '+idL+'.';
+    if(!l.disponible) return 'ERROR: "'+l.titulo+'" ya está prestado.';
+    const p={ id:this.pila.nextId++, idUsuario:u.id, idLibro:l.id, nombreUsuario:u.nombre, tituloLibro:l.titulo, fechaPrestamo:this.hoy(), fechaDevolucion:'', devuelto:false };
+    l.disponible=false;
+    this.pila.apilar(p);
+    return 'OK: Préstamo registrado.\n    Usuario : '+u.nombre+'\n    Libro   : '+l.titulo+'\n    Fecha   : '+p.fechaPrestamo;
+  }
+  registrarDevolucion(idL){
+    const l=this.catalogo.buscarLibroPorId(idL);
+    if(!l) return 'ERROR: No existe libro con ID '+idL+'.';
+    if(l.disponible) return 'ERROR: "'+l.titulo+'" no está prestado.';
+    const p=this.pila.buscarActivoPorLibro(idL);
+    if(!p) return 'ERROR: No se encontró el préstamo activo.';
+    p.devuelto=true; p.fechaDevolucion=this.hoy();
+    l.disponible=true;
+    return 'OK: Devolución registrada.\n    Libro    : '+l.titulo+'\n    Usuario  : '+p.nombreUsuario+'\n    Prestado : '+p.fechaPrestamo+'\n    Devuelto : '+p.fechaDevolucion;
+  }
+  estadisticas(){
+    const libros=this.catalogo.todosLibros();
+    let disp=0,prest=0; libros.forEach(l=>l.disponible?disp++:prest++);
+    const pend=this.pila.historial(true).length;
+    return { totalLibros:libros.length, disponibles:disp, prestados:prest, totalUsuarios:this.catalogo.tamUsuarios, totalPrestamos:this.pila.tam, pendientes:pend, devueltos:this.pila.tam-pend };
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  MOTOR DE CONSOLA — maneja estados del menú
+// ═══════════════════════════════════════════════════════════
+const sistema = new SistemaBiblioteca();
+let estado = 'PRINCIPAL';
+let estadoSub = null;
+let bufferDatos = {};
+
+const out = document.getElementById('terminal-output');
+const inp = document.getElementById('terminal-input');
+const prompt = document.getElementById('terminal-prompt');
+
+function line(html){ const d=document.createElement('div'); d.innerHTML=html; out.appendChild(d); out.scrollTop=out.scrollHeight; }
+function blank(){ line(''); }
+function c(color,txt){ return `<span class="${color}">${txt}</span>`; }
+const cyan=t=>c('t-cyan',t), grn=t=>c('t-green',t), yel=t=>c('t-yellow',t),
+      mag=t=>c('t-magenta',t), red=t=>c('t-red',t), gry=t=>c('t-gray',t),
+      whi=t=>c('t-white',t), blu=t=>c('t-blue',t);
+
+function encabezado(titulo, color){
+  const n=titulo.length+4, bar='═'.repeat(n);
+  const fn = color==='cyan'?cyan:color==='green'?grn:color==='magenta'?mag:color==='yellow'?yel:blu;
+  line(fn('╔'+bar+'╗'));
+  line(fn('║  ')+whi(titulo)+fn('  ║'));
+  line(fn('╚'+bar+'╝'));
+}
+function separador(){ line(gry('  '+'─'.repeat(56))); }
+function ok(msg){ blank(); line(grn('  ✔ ')+msg); blank(); }
+function err(msg){ blank(); line(red('  ✘ ')+msg); blank(); }
+function info(msg){ blank(); line(yel('  ℹ '+msg)); blank(); }
+function opcion(num,texto,extra){ line('  '+whi(num+'.')+' '+texto+(extra?' '+gry(extra):'')); }
+
+function setPrompt(txt){ prompt.textContent=txt; }
+
+// ── menús ─────────────────────────────────────────────────
+function mostrarPrincipal(){
+  blank();
+  encabezado('SISTEMA DE GESTIÓN DE BIBLIOTECA','cyan');
+  blank();
+  opcion('1','Gestionar Libros',cyan('(Lista Simple)'));
+  opcion('2','Gestionar Usuarios',grn('(Lista Simple)'));
+  opcion('3','Gestionar Préstamos',mag('(Pila / LIFO)'));
+  opcion('4','Ver Estadísticas','');
+  opcion('0','Salir','');
+  blank();
+  estado='PRINCIPAL'; estadoSub=null; bufferDatos={};
+  setPrompt('▶');
+}
+
+function mostrarMenuLibros(){
+  blank();
+  encabezado('CATÁLOGO DE LIBROS — Lista Simple','cyan');
+  blank();
+  opcion('1','Agregar libro','');
+  opcion('2','Listar todos','');
+  opcion('3','Buscar libro','por título o autor');
+  opcion('4','Editar libro','');
+  opcion('5','Eliminar libro','');
+  opcion('0','Volver','');
+  blank();
+  estado='LIBROS'; estadoSub=null; bufferDatos={};
+  setPrompt('▶');
+}
+
+function mostrarMenuUsuarios(){
+  blank();
+  encabezado('GESTIÓN DE USUARIOS — Lista Simple','green');
+  blank();
+  opcion('1','Registrar usuario','');
+  opcion('2','Listar todos','');
+  opcion('3','Editar usuario','nombre / email / teléfono');
+  opcion('4','Eliminar usuario','');
+  opcion('0','Volver','');
+  blank();
+  estado='USUARIOS'; estadoSub=null; bufferDatos={};
+  setPrompt('▶');
+}
+
+function mostrarMenuPrestamos(){
+  blank();
+  encabezado('PRÉSTAMOS Y DEVOLUCIONES — Pila LIFO','magenta');
+  blank();
+  opcion('1','Registrar préstamo','');
+  opcion('2','Registrar devolución','');
+  opcion('3','Ver último préstamo',mag('tope de la pila'));
+  opcion('4','Ver historial completo','más reciente primero');
+  opcion('5','Ver pendientes','libros no devueltos');
+  opcion('0','Volver','');
+  blank();
+  estado='PRESTAMOS'; estadoSub=null; bufferDatos={};
+  setPrompt('▶');
+}
+
+function listarLibros(libros){
+  if(!libros.length){ info('No hay libros para mostrar.'); return; }
+  libros.forEach((l,i)=>{
+    const est=l.disponible?grn('(Disponible)'):red('(Prestado)');
+    line('  '+gry((i+1)+'. ['+String(l.id).padStart(2,'0')+']')+' "'+whi(l.titulo)+'" — '+l.autor+' '+gry('('+l.genero+', '+l.anio+')')+' '+est);
+  });
+}
+function listarUsuarios(usuarios){
+  if(!usuarios.length){ info('No hay usuarios registrados.'); return; }
+  usuarios.forEach((u,i)=>{
+    const est=u.activo?grn('(Activo)'):red('(Inactivo)');
+    line('  '+gry((i+1)+'. ['+String(u.id).padStart(2,'0')+']')+' '+whi(u.nombre)+' | DNI: '+u.dni+' | '+u.email+' '+est);
+  });
+}
+function listarPrestamos(ps){
+  if(!ps.length){ info('No hay préstamos para mostrar.'); return; }
+  ps.forEach((p,i)=>{
+    const estado=p.devuelto
+      ? gry('Prestado:')+' '+p.fechaPrestamo+'  '+gry('Devuelto:')+' '+p.fechaDevolucion+'  '+grn('✔')
+      : gry('Prestado:')+' '+p.fechaPrestamo+'  '+yel('PENDIENTE');
+    line('  '+gry((i+1)+'. ['+String(p.id).padStart(3,'0')+']')+' "'+whi(p.tituloLibro)+'" → '+p.nombreUsuario);
+    line('       '+estado);
+  });
+}
+
+// ── procesador de input ───────────────────────────────────
+function procesar(input){
+  line(yel('  ▶ ')+c('t-input',input));
+
+  // ──── PRINCIPAL ────────────────────────────────────────
+  if(estado==='PRINCIPAL'){
+    if(input==='1') mostrarMenuLibros();
+    else if(input==='2') mostrarMenuUsuarios();
+    else if(input==='3') mostrarMenuPrestamos();
+    else if(input==='4'){
+      const s=sistema.estadisticas();
+      blank();
+      encabezado('ESTADÍSTICAS GENERALES','yellow');
+      blank();
+      line('  Total de libros       : '+whi(s.totalLibros));
+      line('  '+grn('Disponibles')+gry('           : ')+s.disponibles);
+      line('  '+red('Prestados')+gry('             : ')+s.prestados);
+      separador();
+      line('  Total de usuarios     : '+whi(s.totalUsuarios));
+      separador();
+      line('  Total de préstamos    : '+whi(s.totalPrestamos));
+      line('  '+yel('Pendientes')+gry('            : ')+s.pendientes);
+      line('  '+grn('Devueltos')+gry('             : ')+s.devueltos);
+      blank();
+      mostrarPrincipal();
+    }
+    else if(input==='0'){ blank(); line(grn('  ¡Hasta luego!')); blank(); line(gry('  [Escribí cualquier tecla para volver a empezar]')); estado='FIN'; }
+    else err('Opción inválida. Intentá de nuevo.');
+  }
+
+  // ──── LIBROS ───────────────────────────────────────────
+  else if(estado==='LIBROS'){
+    if(!estadoSub){
+      if(input==='0') mostrarPrincipal();
+      else if(input==='1'){ blank(); line(yel('  ▶ Título: ')); estadoSub='AGR_TITULO'; }
+      else if(input==='2'){ blank(); encabezado('Catálogo completo','cyan'); blank(); listarLibros(sistema.catalogo.todosLibros()); blank(); mostrarMenuLibros(); }
+      else if(input==='3'){ blank(); line(yel('  ▶ Buscar (título o autor): ')); estadoSub='BUSCAR'; }
+      else if(input==='4'){ blank(); listarLibros(sistema.catalogo.todosLibros()); blank(); line(yel('  ▶ ID del libro a editar: ')); estadoSub='EDIT_ID'; }
+      else if(input==='5'){ blank(); listarLibros(sistema.catalogo.todosLibros()); blank(); line(yel('  ▶ ID del libro a eliminar: ')); estadoSub='ELIM_ID'; }
+      else err('Opción inválida.');
+    } else {
+      // sub-estados agregar libro
+      if(estadoSub==='AGR_TITULO'){ bufferDatos.titulo=input; line(yel('  ▶ Autor: ')); estadoSub='AGR_AUTOR'; }
+      else if(estadoSub==='AGR_AUTOR'){ bufferDatos.autor=input; line(yel('  ▶ Género: ')); estadoSub='AGR_GENERO'; }
+      else if(estadoSub==='AGR_GENERO'){ bufferDatos.genero=input; line(yel('  ▶ Año de publicación: ')); estadoSub='AGR_ANIO'; }
+      else if(estadoSub==='AGR_ANIO'){
+        const msg=sistema.catalogo.agregarLibro(bufferDatos.titulo,bufferDatos.autor,bufferDatos.genero,input);
+        msg.startsWith('OK')?ok(msg.slice(3)):err(msg.slice(6));
+        mostrarMenuLibros();
+      }
+      // buscar
+      else if(estadoSub==='BUSCAR'){
+        const r=sistema.catalogo.buscarLibros(input);
+        blank(); encabezado('Resultados ('+r.length+')','cyan'); blank();
+        listarLibros(r); blank(); mostrarMenuLibros();
+      }
+      // editar
+      else if(estadoSub==='EDIT_ID'){
+        const id=parseInt(input); const l=sistema.catalogo.buscarLibroPorId(id);
+        if(!l){ err('Libro no encontrado.'); mostrarMenuLibros(); }
+        else{ bufferDatos.id=id; line('  "'+whi(l.titulo)+'" — '+l.autor); line(gry('  (dejá en blanco para no cambiar)')); line(yel('  ▶ Nuevo título: ')); estadoSub='EDIT_TITULO'; }
+      }
+      else if(estadoSub==='EDIT_TITULO'){ bufferDatos.titulo=input; line(yel('  ▶ Nuevo autor: ')); estadoSub='EDIT_AUTOR'; }
+      else if(estadoSub==='EDIT_AUTOR'){ bufferDatos.autor=input; line(yel('  ▶ Nuevo género: ')); estadoSub='EDIT_GENERO'; }
+      else if(estadoSub==='EDIT_GENERO'){
+        bufferDatos.genero=input;
+        const l=sistema.catalogo.buscarLibroPorId(bufferDatos.id);
+        if(bufferDatos.titulo.trim()) l.titulo=bufferDatos.titulo.trim();
+        if(bufferDatos.autor.trim())  l.autor=bufferDatos.autor.trim();
+        if(bufferDatos.genero.trim()) l.genero=bufferDatos.genero.trim();
+        ok('Libro ['+bufferDatos.id+'] actualizado correctamente.');
+        mostrarMenuLibros();
+      }
+      // eliminar
+      else if(estadoSub==='ELIM_ID'){
+        const id=parseInt(input); const l=sistema.catalogo.buscarLibroPorId(id);
+        if(!l){ err('Libro no encontrado.'); mostrarMenuLibros(); }
+        else if(!l.disponible){ err('"'+l.titulo+'" está prestado. Devolvé el libro primero.'); mostrarMenuLibros(); }
+        else{
+          const msg=sistema.catalogo.eliminarLibro(id);
+          msg.startsWith('OK')?ok(msg.slice(3)):err(msg.slice(6));
+          mostrarMenuLibros();
+        }
+      }
+    }
+  }
+
+  // ──── USUARIOS ─────────────────────────────────────────
+  else if(estado==='USUARIOS'){
+    if(!estadoSub){
+      if(input==='0') mostrarPrincipal();
+      else if(input==='1'){ blank(); line(yel('  ▶ Nombre completo: ')); estadoSub='UAGR_NOMBRE'; }
+      else if(input==='2'){ blank(); encabezado('Usuarios registrados','green'); blank(); listarUsuarios(sistema.catalogo.todosUsuarios()); blank(); mostrarMenuUsuarios(); }
+      else if(input==='3'){ blank(); listarUsuarios(sistema.catalogo.todosUsuarios()); blank(); line(yel('  ▶ ID del usuario a editar: ')); estadoSub='UEDIT_ID'; }
+      else if(input==='4'){ blank(); listarUsuarios(sistema.catalogo.todosUsuarios()); blank(); line(yel('  ▶ ID del usuario a eliminar: ')); estadoSub='UELIM_ID'; }
+      else err('Opción inválida.');
+    } else {
+      if(estadoSub==='UAGR_NOMBRE'){ bufferDatos.nombre=input; line(yel('  ▶ DNI: ')); estadoSub='UAGR_DNI'; }
+      else if(estadoSub==='UAGR_DNI'){ bufferDatos.dni=input; line(yel('  ▶ Email: ')); estadoSub='UAGR_EMAIL'; }
+      else if(estadoSub==='UAGR_EMAIL'){ bufferDatos.email=input; line(yel('  ▶ Teléfono: ')); estadoSub='UAGR_TEL'; }
+      else if(estadoSub==='UAGR_TEL'){
+        const msg=sistema.catalogo.agregarUsuario(bufferDatos.nombre,bufferDatos.dni,bufferDatos.email,input);
+        msg.startsWith('OK')?ok(msg.slice(3)):err(msg.slice(6));
+        mostrarMenuUsuarios();
+      }
+      else if(estadoSub==='UEDIT_ID'){
+        const id=parseInt(input); const u=sistema.catalogo.buscarUsuarioPorId(id);
+        if(!u){ err('Usuario no encontrado.'); mostrarMenuUsuarios(); }
+        else{ bufferDatos.id=id; line('  '+whi(u.nombre)+' | DNI: '+u.dni); line(gry('  (dejá en blanco para no cambiar)')); line(yel('  ▶ Nuevo nombre: ')); estadoSub='UEDIT_NOMBRE'; }
+      }
+      else if(estadoSub==='UEDIT_NOMBRE'){ bufferDatos.nombre=input; line(yel('  ▶ Nuevo email: ')); estadoSub='UEDIT_EMAIL'; }
+      else if(estadoSub==='UEDIT_EMAIL'){
+        bufferDatos.email=input;
+        const u=sistema.catalogo.buscarUsuarioPorId(bufferDatos.id);
+        if(bufferDatos.nombre.trim()) u.nombre=bufferDatos.nombre.trim();
+        if(bufferDatos.email.trim())  u.email=bufferDatos.email.trim();
+        ok('Usuario ['+bufferDatos.id+'] actualizado.');
+        mostrarMenuUsuarios();
+      }
+      else if(estadoSub==='UELIM_ID'){
+        const id=parseInt(input);
+        const activos=sistema.pila.activosPorUsuario(id);
+        if(activos.length>0){ err('El usuario tiene '+activos.length+' préstamo(s) activo(s). Debe devolver los libros primero.'); mostrarMenuUsuarios(); return; }
+        const msg=sistema.catalogo.eliminarUsuario(id);
+        msg.startsWith('OK')?ok(msg.slice(3)):err(msg.slice(6));
+        mostrarMenuUsuarios();
+      }
+    }
+  }
+
+  // ──── PRÉSTAMOS ────────────────────────────────────────
+  else if(estado==='PRESTAMOS'){
+    if(!estadoSub){
+      if(input==='0') mostrarPrincipal();
+      else if(input==='1'){
+        blank(); separador();
+        sistema.catalogo.todosUsuarios().forEach(u=>line('  '+gry('['+String(u.id).padStart(2,'0')+']')+' '+u.nombre+(u.activo?'':' '+red('(inactivo)'))));
+        separador(); blank(); line(yel('  ▶ ID del usuario: ')); estadoSub='PRES_IU';
+      }
+      else if(input==='2'){
+        blank(); separador();
+        const prest=sistema.catalogo.todosLibros().filter(l=>!l.disponible);
+        if(!prest.length) line(gry('  No hay libros prestados.'));
+        else prest.forEach(l=>line('  '+gry('['+String(l.id).padStart(2,'0')+']')+' "'+whi(l.titulo)+'"'));
+        separador(); blank(); line(yel('  ▶ ID del libro a devolver: ')); estadoSub='DEV_IL';
+      }
+      else if(input==='3'){
+        const p=sistema.pila.verUltimo();
+        if(!p){ info('La pila está vacía.'); }
+        else{
+          blank(); encabezado('Tope de la Pila (último préstamo)','blue'); blank();
+          const est=p.devuelto?grn('✔ Devuelto el '+p.fechaDevolucion):yel('PENDIENTE');
+          line('  ['+String(p.id).padStart(3,'0')+'] "'+whi(p.tituloLibro)+'" → '+p.nombreUsuario);
+          line('       '+gry('Prestado:')+' '+p.fechaPrestamo+'  '+est);
+          blank();
+        }
+        mostrarMenuPrestamos();
+      }
+      else if(input==='4'){ blank(); encabezado('Historial completo','magenta'); blank(); listarPrestamos(sistema.pila.historial(false)); blank(); mostrarMenuPrestamos(); }
+      else if(input==='5'){ blank(); encabezado('Préstamos pendientes','yellow'); blank(); listarPrestamos(sistema.pila.historial(true)); blank(); mostrarMenuPrestamos(); }
+      else err('Opción inválida.');
+    } else {
+      if(estadoSub==='PRES_IU'){
+        bufferDatos.idU=parseInt(input);
+        blank(); separador();
+        sistema.catalogo.todosLibros().filter(l=>l.disponible).forEach(l=>line('  '+gry('['+String(l.id).padStart(2,'0')+']')+' "'+whi(l.titulo)+'"'));
+        separador(); blank(); line(yel('  ▶ ID del libro: ')); estadoSub='PRES_IL';
+      }
+      else if(estadoSub==='PRES_IL'){
+        const msg=sistema.registrarPrestamo(bufferDatos.idU,parseInt(input));
+        if(msg.startsWith('OK')){ blank(); msg.split('\n').forEach(l=>line(grn('  ')+l.replace('OK: ',''))); blank(); }
+        else err(msg.slice(6));
+        mostrarMenuPrestamos();
+      }
+      else if(estadoSub==='DEV_IL'){
+        const msg=sistema.registrarDevolucion(parseInt(input));
+        if(msg.startsWith('OK')){ blank(); msg.split('\n').forEach(l=>line(grn('  ')+l.replace('OK: ',''))); blank(); }
+        else err(msg.slice(6));
+        mostrarMenuPrestamos();
+      }
+    }
+  }
+
+  else if(estado==='FIN'){
+    mostrarPrincipal();
+  }
+}
+
+// ── input listener ─────────────────────────────────────────
+inp.addEventListener('keydown', e=>{
+  if(e.key==='Enter'){
+    const val=inp.value.trim();
+    inp.value='';
+    procesar(val);
+  }
+});
+
+// ── foco automático cuando se llega al slide ───────────────
+document.addEventListener('DOMContentLoaded', ()=>{
+  Reveal.initialize({
+    hash: true,
+    width: 1280,
+    height: 720,
+    margin: 0.03,
+    minScale: 0.2,
+    maxScale: 2.2,
+    slideNumber: 'c/t',
+    transition: 'slide',
+    transitionSpeed: 'fast',
+    center: false,        // el contenido se alinea arriba (flex-column), no se centra verticalmente
+    controls: true,
+    progress: true,
+    touch: false,
+    // Reveal ya ignora las teclas de navegación (Enter/Espacio/flechas)
+    // cuando el foco está en un <input>, así que la consola interactiva
+    // funciona sin pisar la navegación de slides.
+    keyboard: true
+  });
+
+  Reveal.on('slidechanged', e=>{
+    if(e.currentSlide.id==='demo-slide'){
+      setTimeout(()=>{ inp.focus(); },300);
+      if(out.childElementCount===0) mostrarPrincipal();
+    }
+  });
+
+  // si arranca en el slide demo
+  if(document.querySelector('.present')?.id==='demo-slide'){
+    setTimeout(()=>{ inp.focus(); mostrarPrincipal(); },400);
+  }
+});
+</script>
+</body>
+</html>
